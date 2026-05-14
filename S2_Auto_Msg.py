@@ -17,7 +17,7 @@ scope = [
 creds = Credentials.from_service_account_file(GS_JSON_PATH, scopes=scope)
 gc = gspread.authorize(creds)
 
-spreadsheet = gc.open_by_url("https://docs.google.com/spreadsheets/d/1ojlyIZbobA6BrmzQZYAG7orubQfE7hWyzAVBxRPM788/edit#gid=0")
+spreadsheet = gc.open_by_url("https://docs.google.com/spreadsheets/d/12jkPCRuMfDu26pDy6mg3_gMUsEl2N60yGkBscJsIchM/edit?usp=sharing")
 sheet_names = ["Central", "West", "East"]
 region_map = {"Central": "중부", "East": "동부", "West": "서부"}
 
@@ -130,7 +130,7 @@ summary_list.append(make_summary_row("당월합계", summary_list_this_month))
 summary_df = pd.DataFrame(summary_list)
 
 # 저장 : Google Spreadsheet
-result_spreadsheet = gc.open_by_url("https://docs.google.com/spreadsheets/d/1ojlyIZbobA6BrmzQZYAG7orubQfE7hWyzAVBxRPM788/edit#gid=0")
+result_spreadsheet = gc.open_by_url("https://docs.google.com/spreadsheets/d/12jkPCRuMfDu26pDy6mg3_gMUsEl2N60yGkBscJsIchM/edit?usp=sharing")
 try:
     ws = result_spreadsheet.worksheet("일별실적")
     ws.batch_clear(['A2:Z1000'])
@@ -153,7 +153,7 @@ msg = f"""<strong>식봄 CJFW GMV</strong><br><br>
  - GMV : {format_money(make_summary_row('당월합계', summary_list_this_month)['GMV_합계'])}  ( 중부 : {format_money(make_summary_row('당월합계', summary_list_this_month)['GMV_중부'])} | 동부 : {format_money(make_summary_row('당월합계', summary_list_this_month)['GMV_동부'])} | 서부 : {format_money(make_summary_row('당월합계', summary_list_this_month)['GMV_서부'])} )<br>
  - 쿠폰비용율 : {make_summary_row('당월합계', summary_list_this_month)['비용율_합계']:.2%}  ( 중부 {make_summary_row('당월합계', summary_list_this_month)['비용율_중부']:.2%} | 동부 {make_summary_row('당월합계', summary_list_this_month)['비용율_동부']:.2%} | 서부 {make_summary_row('당월합계', summary_list_this_month)['비용율_서부']:.2%} )<br><br>
 
-<a href=\"https://docs.google.com/spreadsheets/d/1ojlyIZbobA6BrmzQZYAG7orubQfE7hWyzAVBxRPM788\" target=\"_blank\">[일자별 실적]</a>
+<a href=\"https://docs.google.com/spreadsheets/d/12jkPCRuMfDu26pDy6mg3_gMUsEl2N60yGkBscJsIchM\" target=\"_blank\">[일자별 실적]</a>
 """
 
 teams_webhook_url = os.getenv(
