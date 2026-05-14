@@ -3,7 +3,7 @@ name: auto_message
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 5 * * *'  # UTC 5:00 실행 (KST 기준 14:00)
+    - cron: '55 7 * * *'  # UTC 7:55 실행 (KST 기준 16:55)
 
 jobs:
   run-script:
