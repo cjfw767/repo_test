@@ -17,7 +17,7 @@ scope = [
 creds = Credentials.from_service_account_file(GS_JSON_PATH, scopes=scope)
 gc = gspread.authorize(creds)
 
-spreadsheet = gc.open_by_url("https://docs.google.com/spreadsheets/d/1Rj05cusbuxkt1UTQXQgYIXVxncV-cT85zDIZrb7qYZw")
+spreadsheet = gc.open_by_url("https://docs.google.com/spreadsheets/d/1ojlyIZbobA6BrmzQZYAG7orubQfE7hWyzAVBxRPM788/edit#gid=0")
 sheet_names = ["Central", "West", "East"]
 region_map = {"Central": "중부", "East": "동부", "West": "서부"}
 
@@ -130,7 +130,7 @@ summary_list.append(make_summary_row("당월합계", summary_list_this_month))
 summary_df = pd.DataFrame(summary_list)
 
 # 저장 : Google Spreadsheet
-result_spreadsheet = gc.open_by_url("https://docs.google.com/spreadsheets/d/1ojlyIZbobA6BrmzQZYAG7orubQfE7hWyzAVBxRPM788")
+result_spreadsheet = gc.open_by_url("https://docs.google.com/spreadsheets/d/1ojlyIZbobA6BrmzQZYAG7orubQfE7hWyzAVBxRPM788/edit#gid=0")
 try:
     ws = result_spreadsheet.worksheet("일별실적")
     ws.batch_clear(['A2:Z1000'])
@@ -139,7 +139,7 @@ except gspread.exceptions.WorksheetNotFound:
 
 ws.update([summary_df.columns.tolist()] + summary_df.values.tolist())
 
-# 메시지 발송 (재피어/팀즈)
+# 메시지 발송 (팀즈 워크플로)
 def format_money(val):
     return f"{int(val):,}원"
 
@@ -156,15 +156,18 @@ msg = f"""<strong>식봄 CJFW GMV</strong><br><br>
 <a href=\"https://docs.google.com/spreadsheets/d/1ojlyIZbobA6BrmzQZYAG7orubQfE7hWyzAVBxRPM788\" target=\"_blank\">[일자별 실적]</a>
 """
 
-zapier_webhook_url = "https://hooks.zapier.com/hooks/catch/23356383/uousx7i/"
+teams_webhook_url = os.getenv(
+    "TEAMS_WEBHOOK_URL",
+    "https://defaultee6af5c5684f45399eb664793af080.27.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/64650c7863ed42d2b202522ebb109d8a/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=4DTnGL8xef1wQti0Jr96ZzJiLC_j3XmGhLcyKP5c2ew",
+)
 
 try:
-    response = requests.post(zapier_webhook_url, json={"message": msg})
-    if response.status_code == 200:
-        print("Zapier 메시지 전송 완료!")
+    response = requests.post(teams_webhook_url, json={"message": msg})
+    if response.status_code in (200, 202):
+        print("Teams 워크플로 메시지 전송 완료!")
     else:
-        print(f"Zapier 호출 실패: {response.status_code} - {response.text}")
+        print(f"Teams 워크플로 호출 실패: {response.status_code} - {response.text}")
 except Exception as e:
-    print(f"Zapier 메시지 전송 중 오류 발생: {e}")
+    print(f"Teams 워크플로 메시지 전송 중 오류 발생: {e}")
 
 print("전체 작업 완료!")
