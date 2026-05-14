@@ -36,7 +36,7 @@ creds = ServiceAccountCredentials.from_json_keyfile_name(gs_json_path, scope)
 gc = gspread.authorize(creds)
 
 
-spreadsheet_url = "https://docs.google.com/spreadsheets/d/1ojlyIZbobA6BrmzQZYAG7orubQfE7hWyzAVBxRPM788/edit#gid=0"
+spreadsheet_url = "https://docs.google.com/spreadsheets/d/12jkPCRuMfDu26pDy6mg3_gMUsEl2N60yGkBscJsIchM/edit?usp=sharing"
 spreadsheet = gc.open_by_url(spreadsheet_url)
 
 # 식봄 판매자센터 접속
